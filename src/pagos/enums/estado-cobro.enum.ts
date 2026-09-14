@@ -1,0 +1,5 @@
+export enum EstadoCobro{
+  PENDIENTE = 'PENDIENTE',
+  APROBADO = 'APROBADO',
+  RECHAZADO = 'RECHAZADO',
+}
