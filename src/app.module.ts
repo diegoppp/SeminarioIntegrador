@@ -3,8 +3,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersController } from './users/users.controller';
 import { UsersService } from './users/users.service';
-import { UsersModule } from './users/users.module';
-import { AuthModule } from './auth/auth.module';
+import { UbicacionEventoModule } from './ubicacion-evento/ubicacion-evento.module';
+import { TipoEventoModule } from './tipo-evento/tipo-evento.module';
 import { MetricasModule } from './metricas/metricas.module';
 import { AuthController } from './auth/auth.controller';
 import { AuthService } from './auth/auth.service';
@@ -17,7 +17,7 @@ import { TicketsModule } from './tickets/tickets.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
-  imports: [UsersModule, AuthModule, ProductoresModule, EventosModule, ReservacionesModule, PagosModule, TicketsModule, MetricasModule],
+  imports: [UsersModule, AuthModule, ProductoresModule, EventosModule, ReservacionesModule, PagosModule, TicketsModule, MetricasModule, UbicacionEventoModule, TipoEventoModule],
   controllers: [AppController, UsersController, AuthController],
   providers: [AppService, UsersService, AuthService],
 })
