@@ -1,26 +1,34 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CreateEventoDto } from './dto/create-evento.dto';
 import { UpdateEventoDto } from './dto/update-evento.dto';
+import { EventoEntity } from './entities/evento.entity';
+import { EVENTOS_REPOSITORY } from './repositories/eventos.repository';
+import type { EventosRepository } from './repositories/eventos.repository';
 
 @Injectable()
 export class EventosService {
-  create(createEventoDto: CreateEventoDto) {
-    return 'This action adds a new evento';
+  constructor(
+    @Inject(EVENTOS_REPOSITORY)
+    private readonly eventosRepository: EventosRepository,
+  ) {}
+
+  async create(createEventoDto: CreateEventoDto): Promise<EventoEntity> {
+    return this.eventosRepository.create(createEventoDto);
   }
 
-  findAll() {
-    return `This action returns all eventos`;
+  async findAll(): Promise<EventoEntity[]> {
+    return this.eventosRepository.findAll();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} evento`;
+  async findOne(id: number): Promise<EventoEntity | null> {
+    return this.eventosRepository.findOne(id);
   }
 
-  update(id: number, updateEventoDto: UpdateEventoDto) {
-    return `This action updates a #${id} evento`;
+  async update(id: number, updateEventoDto: UpdateEventoDto): Promise<EventoEntity | null> {
+    return this.eventosRepository.update(id, updateEventoDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} evento`;
+  async remove(id: number): Promise<EventoEntity | null> {
+    return this.eventosRepository.remove(id);
   }
 }
