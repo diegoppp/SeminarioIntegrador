@@ -35,7 +35,7 @@ export class User {
   @Column({ type: 'varchar', unique: true, length: 150 })
   email!: string;
 
-  @Column({ type: 'varchar', select: false }) // Oculta la contraseña en consultas por defecto
+  @Column({ type: 'varchar', select: false }) 
   password?: string;
 
   @Column({ type: 'varchar', nullable: true, length: 30 })

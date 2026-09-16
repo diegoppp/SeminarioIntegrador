@@ -1,6 +1,7 @@
 import { Cobro } from "src/pagos/entities/cobro.entity";
 import { User } from "src/users/entities/user.entity";
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { DetalleVenta } from "./detalle-venta.entity";
 
 @Entity ('ventas')
 export class Venta {
