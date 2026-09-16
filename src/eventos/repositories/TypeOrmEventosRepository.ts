@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateEventoDto } from '../dto/create-evento.dto';
 import { UpdateEventoDto } from '../dto/update-evento.dto';
 import { EventoEntity } from '../entities/evento.entity';
-import { EventosRepository } from './eventos.repository';
+import type { EventosRepository } from './eventos.repository';
 
 @Injectable()
 export class TypeOrmEventosRepository implements EventosRepository {
@@ -22,7 +22,12 @@ export class TypeOrmEventosRepository implements EventosRepository {
   }
 
   async create(data: CreateEventoDto): Promise<EventoEntity> {
-    const evento = this.eventoRepository.create(data as any);
+    const evento = this.eventoRepository.create({
+      ...data,
+      fechaHoraInicio: new Date(data.fechaHoraInicio),
+      fechaHoraFin: new Date(data.fechaHoraFin),
+    } as Partial<EventoEntity>);
+
     return await this.eventoRepository.save(evento);
   }
 
@@ -30,7 +35,12 @@ export class TypeOrmEventosRepository implements EventosRepository {
     const evento = await this.eventoRepository.findOneBy({ id });
     if (!evento) return null;
 
-    Object.assign(evento, data);
+    Object.assign(evento, {
+      ...data,
+      fechaHoraInicio: data.fechaHoraInicio ? new Date(data.fechaHoraInicio) : evento.fechaHoraInicio,
+      fechaHoraFin: data.fechaHoraFin ? new Date(data.fechaHoraFin) : evento.fechaHoraFin,
+    });
+
     return await this.eventoRepository.save(evento);
   }
 

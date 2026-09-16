@@ -1,13 +1,15 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { EventosService } from './eventos.service';
 import { EventosController } from './eventos.controller';
-import { TypeOrmModule } from 'node_modules/@nestjs/typeorm/dist/typeorm.module';
 import { EventoEntity } from './entities/evento.entity';
+import { EVENTOS_REPOSITORY } from './repositories/eventos.repository';
+import { TypeOrmEventosRepository } from './repositories/TypeOrmEventosRepository';
 
 @Module({
   controllers: [EventosController],
   imports: [TypeOrmModule.forFeature([EventoEntity])],
-  providers: [EventosService, { provide: EVENTOS_REPOSITORY, useClass: TypeOrmProductsRepository }],
-  exports: [EventosService, EVENTOS_REPOSITORY]
+  providers: [EventosService, { provide: EVENTOS_REPOSITORY, useClass: TypeOrmEventosRepository }],
+  exports: [EventosService, EVENTOS_REPOSITORY],
 })
 export class EventosModule {}
