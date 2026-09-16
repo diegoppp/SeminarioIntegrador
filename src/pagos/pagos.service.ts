@@ -1,10 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Venta } from './entities/venta.entity';
-import { DetalleVenta } from './entities/detalle-venta.entity';
+
+// Importaciones actualizadas con la ruta hacia el módulo de ventas
+import { Venta } from '../venta/entities/venta.entity';
+import { DetalleVenta } from '../venta/entities/detalle-venta.entity';
+import { CreateVentaDto } from '../venta/dto/create-venta.dto';
+
+// Importaciones locales del módulo de pagos
 import { Cobro, EstadoCobro } from './entities/cobro.entity';
-import { CreateVentaDto } from './dto/create-venta.dto';
 import { UsersService } from '../users/users.service';
 
 @Injectable()
@@ -17,7 +21,7 @@ export class PagosService {
     private readonly usersService: UsersService,
   ) {}
 
-  // Genera un string, con le fecha y hora exacta + 4 digitos randoms asi hay 2 ventas con el mismo numero
+  // Genera un string con la fecha y hora exacta + 4 dígitos randoms
   private generarNumeroVenta(): string {
     return `VEN-${Date.now()}-${Math.floor(1000 + Math.random() * 9000)}`;
   }
@@ -50,8 +54,10 @@ export class PagosService {
 
   async confirmarCobro(ventaId: string, idTransaccion: string): Promise<Venta> {
     const venta = await this.ventaRepository.findOne({
-      where: { id: ventaId },
-      relations: ['cobro'],
+    where: { id: ventaId },
+    relations: {
+      cobro: true,
+    },
     });
 
     if (!venta) {
