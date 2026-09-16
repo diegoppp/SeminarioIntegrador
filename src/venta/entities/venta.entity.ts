@@ -29,4 +29,6 @@ export class Venta {
   @OneToMany(() => DetalleVenta, (detalle) => detalle.venta, { cascade: true })
   detalleVenta!: DetalleVenta[];
 
+ 
+
 }
