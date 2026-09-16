@@ -18,10 +18,13 @@ export class TypeOrmEventosRepository implements EventosRepository {
   }
 
   async findOne(id: number): Promise<EventoEntity | null> {
-    return await this.eventoRepository.findOneBy({ id });
+    const evento = await this.eventoRepository.findOneBy({ id });
+    if (!evento) return null;
+    return evento;
   }
 
   async create(data: CreateEventoDto): Promise<EventoEntity> {
+    //Parsear las fechas a Date porque vienen en formato json
     const evento = this.eventoRepository.create({
       ...data,
       fechaHoraInicio: new Date(data.fechaHoraInicio),
@@ -35,6 +38,7 @@ export class TypeOrmEventosRepository implements EventosRepository {
     const evento = await this.eventoRepository.findOneBy({ id });
     if (!evento) return null;
 
+    //Parsear las fechas a Date porque vienen en formato json
     Object.assign(evento, {
       ...data,
       fechaHoraInicio: data.fechaHoraInicio ? new Date(data.fechaHoraInicio) : evento.fechaHoraInicio,
