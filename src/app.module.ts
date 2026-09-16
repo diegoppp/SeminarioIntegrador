@@ -13,32 +13,32 @@ import { ReservacionesModule } from './reservaciones/reservaciones.module';
 import { PagosModule } from './pagos/pagos.module';
 import { TicketsModule } from './tickets/tickets.module';
 import { MetricasModule } from './metricas/metricas.module';
-import { VentaModule } from './venta/venta.module';
+import { VentasModule } from './venta/venta.module';
 
 @Module({
   imports: [
-    // Configuración de variables de entorno (.env)
+    // Configuración global de variables de entorno (.env)
     ConfigModule.forRoot({
       isGlobal: true,
     }),
 
-    // Configuración de PostgreSQL con TypeORM
+    // Configuración asíncrona de PostgreSQL mediante TypeORM
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
-        host: configService.get<string>('DB_HOST'),
-        port: configService.get<number>('DB_PORT'),
-        username: configService.get<string>('DB_USERNAME'),
-        password: configService.get<string>('DB_PASSWORD'),
-        database: configService.get<string>('DB_DATABASE'),
-        autoLoadEntities: true,
-        synchronize: true, // Cambiar a false en producción
+        host: configService.get<string>('DB_HOST', 'localhost'),
+        port: configService.get<number>('DB_PORT', 5432),
+        username: configService.get<string>('DB_USERNAME', 'postgres'),
+        password: configService.get<string>('DB_PASSWORD', 'postgres'),
+        database: configService.get<string>('DB_DATABASE', 'eventos_db'),
+        autoLoadEntities: true, // Carga automáticamente todas las entidades registradas en los módulos
+        synchronize: true, // Crea/actualiza tablas automáticamente en desarrollo (desactivar en producción)
       }),
     }),
 
-    // Módulos del dominio
+    // Módulos funcionales del sistema
     UsersModule,
     AuthModule,
     ProductoresModule,
@@ -47,7 +47,7 @@ import { VentaModule } from './venta/venta.module';
     PagosModule,
     TicketsModule,
     MetricasModule,
-    VentaModule,
+    VentasModule,
   ],
   controllers: [AppController],
   providers: [AppService],

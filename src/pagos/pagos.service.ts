@@ -1,26 +1,70 @@
-import { Injectable } from '@nestjs/common';
-import { CreatePagoDto } from './dto/create-pago.dto';
-import { UpdatePagoDto } from './dto/update-pago.dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Venta } from './entities/venta.entity';
+import { DetalleVenta } from './entities/detalle-venta.entity';
+import { Cobro, EstadoCobro } from './entities/cobro.entity';
+import { CreateVentaDto } from './dto/create-venta.dto';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class PagosService {
-  create(createPagoDto: CreatePagoDto) {
-    return 'This action adds a new pago';
+  constructor(
+    @InjectRepository(Venta)
+    private readonly ventaRepository: Repository<Venta>,
+    @InjectRepository(Cobro)
+    private readonly cobroRepository: Repository<Cobro>,
+    private readonly usersService: UsersService,
+  ) {}
+
+  // Genera un string, con le fecha y hora exacta + 4 digitos randoms asi hay 2 ventas con el mismo numero
+  private generarNumeroVenta(): string {
+    return `VEN-${Date.now()}-${Math.floor(1000 + Math.random() * 9000)}`;
   }
 
-  findAll() {
-    return `This action returns all pagos`;
+  async crearVenta(createVentaDto: CreateVentaDto): Promise<Venta> {
+    // Verifica que el usuario exista
+    const usuario = await this.usersService.findOne(createVentaDto.usuarioId);
+
+    let total = 0;
+    const detalles: DetalleVenta[] = createVentaDto.detalles.map((d) => {
+      const subtotal = d.cantidad * d.precioUnitario;
+      total += subtotal;
+
+      const detalle = new DetalleVenta();
+      detalle.cantidad = d.cantidad;
+      detalle.precioUnitario = d.precioUnitario;
+      detalle.subtotal = subtotal;
+      return detalle;
+    });
+
+    const nuevaVenta = this.ventaRepository.create({
+      numeroVenta: this.generarNumeroVenta(),
+      usuario,
+      total,
+      detalleVenta: detalles,
+    });
+
+    return await this.ventaRepository.save(nuevaVenta);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} pago`;
-  }
+  async confirmarCobro(ventaId: string, idTransaccion: string): Promise<Venta> {
+    const venta = await this.ventaRepository.findOne({
+      where: { id: ventaId },
+      relations: ['cobro'],
+    });
 
-  update(id: number, updatePagoDto: UpdatePagoDto) {
-    return `This action updates a #${id} pago`;
-  }
+    if (!venta) {
+      throw new NotFoundException(`Venta ${ventaId} no encontrada`);
+    }
 
-  remove(id: number) {
-    return `This action removes a #${id} pago`;
+    const cobro = this.cobroRepository.create({
+      monto: venta.total,
+      estadoCobro: EstadoCobro.APROBADO,
+      idTransaccion,
+    });
+
+    venta.cobro = await this.cobroRepository.save(cobro);
+    return await this.ventaRepository.save(venta);
   }
 }
