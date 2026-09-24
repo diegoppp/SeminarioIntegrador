@@ -1,10 +1,15 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { TipoEventoEntity } from '../../tipo-evento/tipo-evento.entity';
 import { UbicacionEventoEntity } from '../../ubicacion-evento/entities/ubicacion-evento.entity';
 
 @Entity('eventos')
 export class EventoEntity {
-
   @PrimaryGeneratedColumn()
   id!: number;
 

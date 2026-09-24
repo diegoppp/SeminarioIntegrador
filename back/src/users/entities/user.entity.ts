@@ -5,15 +5,10 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-
-export enum RolUsuario {
-  CLIENTE = 'CLIENTE',
-  PRODUCTOR = 'PRODUCTOR',
-  ADMIN = 'ADMIN',
-}
+import { UserRole } from '../enums/rol.enum';
 
 @Entity('usuarios')
-export class User {
+export class UserEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
@@ -35,31 +30,27 @@ export class User {
   @Column({ type: 'varchar', unique: true, length: 150 })
   email!: string;
 
-  @Column({ type: 'varchar', select: false }) 
-  password?: string;
-
   @Column({ type: 'varchar', nullable: true, length: 30 })
   telefono!: string;
 
-  @Column({
-    type: 'enum',
-    enum: RolUsuario,
-    default: RolUsuario.CLIENTE,
-  })
-  rol!: RolUsuario;
+  @Column({ type: 'enum', enum: UserRole, default: UserRole.CLIENTE })
+  rol!: UserRole;
 
   @Column({ type: 'boolean', default: false })
   emailVerificado!: boolean;
 
   @Column({ type: 'varchar', nullable: true })
-  tokenVerificacionEmail?: string;
+  tokenVerificacionEmail: string | null = null;
 
   @Column({ type: 'varchar', nullable: true })
-  tokenRecuperacionPassword?: string;
+  tokenRecuperacionPassword: string | null = null;
+
+  @Column({ type: 'timestamp', nullable: true })
+  tokenRecuperacionExpiracion: Date | null = null;
 
   @CreateDateColumn({ type: 'timestamp' })
   creadoEn!: Date;
 
-  @UpdateDateColumn({ type: 'timestamp' })
-  actualizadoEn!: Date;
+  @Column({ type: 'varchar', select: false, length: 255 })
+  passwordHash!: string;
 }

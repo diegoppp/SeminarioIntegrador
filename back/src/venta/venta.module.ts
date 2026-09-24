@@ -8,14 +8,16 @@ import { VentaService } from './venta.service';
 import { VentaController } from './venta.controller';
 
 import { UsersModule } from '../users/users.module';
+import { VENTAS_REPOSITORY } from './repositories/venta.repository';
+import { TypeOrmVentasRepository } from './repositories/TypeOrmVentasRepository';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Venta, DetalleVenta]),
-    UsersModule,
-  ],
+  imports: [TypeOrmModule.forFeature([Venta, DetalleVenta]), UsersModule],
   controllers: [VentaController],
-  providers: [VentaService],
-  exports: [VentaService, TypeOrmModule],
+  providers: [
+    VentaService,
+    { provide: VENTAS_REPOSITORY, useClass: TypeOrmVentasRepository },
+  ],
+  exports: [VentaService, VENTAS_REPOSITORY],
 })
 export class VentasModule {}

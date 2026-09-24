@@ -1,4 +1,4 @@
-export enum EstadoCobro{
+export enum EstadoCobro {
   PENDIENTE = 'PENDIENTE',
   APROBADO = 'APROBADO',
   RECHAZADO = 'RECHAZADO',

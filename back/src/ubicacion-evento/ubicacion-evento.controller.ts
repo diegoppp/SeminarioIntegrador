@@ -1,11 +1,21 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { UbicacionEventoService } from './ubicacion-evento.service';
 import { CreateUbicacionEventoDto } from './dto/create-ubicacion-evento.dto';
 import { UpdateUbicacionEventoDto } from './dto/update-ubicacion-evento.dto';
 
 @Controller('ubicacion-evento')
 export class UbicacionEventoController {
-  constructor(private readonly ubicacionEventoService: UbicacionEventoService) {}
+  constructor(
+    private readonly ubicacionEventoService: UbicacionEventoService,
+  ) {}
 
   @Post()
   create(@Body() createUbicacionEventoDto: CreateUbicacionEventoDto) {
@@ -23,7 +33,10 @@ export class UbicacionEventoController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUbicacionEventoDto: UpdateUbicacionEventoDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateUbicacionEventoDto: UpdateUbicacionEventoDto,
+  ) {
     return this.ubicacionEventoService.update(+id, updateUbicacionEventoDto);
   }
 

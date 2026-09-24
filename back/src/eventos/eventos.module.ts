@@ -10,8 +10,17 @@ import { UbicacionEventoEntity } from '../ubicacion-evento/entities/ubicacion-ev
 
 @Module({
   controllers: [EventosController],
-  imports: [TypeOrmModule.forFeature([EventoEntity, TipoEventoEntity, UbicacionEventoEntity])],
-  providers: [EventosService, { provide: EVENTOS_REPOSITORY, useClass: TypeOrmEventosRepository }],
+  imports: [
+    TypeOrmModule.forFeature([
+      EventoEntity,
+      TipoEventoEntity,
+      UbicacionEventoEntity,
+    ]),
+  ],
+  providers: [
+    EventosService,
+    { provide: EVENTOS_REPOSITORY, useClass: TypeOrmEventosRepository },
+  ],
   exports: [EventosService, EVENTOS_REPOSITORY],
 })
 export class EventosModule {}

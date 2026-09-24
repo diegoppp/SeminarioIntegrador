@@ -1,26 +1,56 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { UbicacionEventoEntity } from './entities/ubicacion-evento.entity';
 import { CreateUbicacionEventoDto } from './dto/create-ubicacion-evento.dto';
 import { UpdateUbicacionEventoDto } from './dto/update-ubicacion-evento.dto';
+import { UBICACION_EVENTO_REPOSITORY } from './repositories/ubicacion-evento.repository';
+import type { UbicacionEventoRepository } from './repositories/ubicacion-evento.repository';
 
 @Injectable()
 export class UbicacionEventoService {
-  create(createUbicacionEventoDto: CreateUbicacionEventoDto) {
-    return 'This action adds a new ubicacionEvento';
+  constructor(
+    @Inject(UBICACION_EVENTO_REPOSITORY)
+    private readonly ubicacionEventoRepository: UbicacionEventoRepository,
+  ) {}
+
+  async create(
+    createUbicacionEventoDto: CreateUbicacionEventoDto,
+  ): Promise<UbicacionEventoEntity> {
+    return await this.ubicacionEventoRepository.create(
+      createUbicacionEventoDto,
+    );
   }
 
-  findAll() {
-    return `This action returns all ubicacionEvento`;
+  findAll(): Promise<UbicacionEventoEntity[]> {
+    return this.ubicacionEventoRepository.findAll();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} ubicacionEvento`;
+  async findOne(id: number): Promise<UbicacionEventoEntity> {
+    const ubicacion = await this.ubicacionEventoRepository.findOne(id);
+    if (!ubicacion) {
+      throw new NotFoundException(`Ubicación con ID ${id} no encontrada`);
+    }
+    return ubicacion;
   }
 
-  update(id: number, updateUbicacionEventoDto: UpdateUbicacionEventoDto) {
-    return `This action updates a #${id} ubicacionEvento`;
+  async update(
+    id: number,
+    updateUbicacionEventoDto: UpdateUbicacionEventoDto,
+  ): Promise<UbicacionEventoEntity> {
+    const ubicacion = await this.ubicacionEventoRepository.update(
+      id,
+      updateUbicacionEventoDto,
+    );
+    if (!ubicacion) {
+      throw new NotFoundException(`Ubicación con ID ${id} no encontrada`);
+    }
+    return ubicacion;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} ubicacionEvento`;
+  async remove(id: number): Promise<UbicacionEventoEntity> {
+    const ubicacion = await this.ubicacionEventoRepository.remove(id);
+    if (!ubicacion) {
+      throw new NotFoundException(`Ubicación con ID ${id} no encontrada`);
+    }
+    return ubicacion;
   }
 }

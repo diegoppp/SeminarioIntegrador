@@ -7,22 +7,28 @@ import {
   IsEnum,
   IsDateString,
 } from 'class-validator';
-import { RolUsuario } from '../entities/user.entity';
+import { UserRole } from '../enums/rol.enum';
 
 export class CreateUserDto {
   @IsString({ message: 'El nombre debe ser un texto' })
   @IsNotEmpty({ message: 'El nombre es obligatorio' })
-  nombre: string;
+  nombre!: string;
 
   @IsString({ message: 'El apellido debe ser un texto' })
   @IsNotEmpty({ message: 'El apellido es obligatorio' })
-  apellido: string;
+  apellido!: string;
 
   @IsString({ message: 'El DNI debe ser un texto' })
   @IsNotEmpty({ message: 'El DNI es obligatorio' })
-  dni: string;
+  dni!: string;
 
-  @IsDateString({}, { message: 'La fecha de nacimiento debe tener un formato de fecha válido (YYYY-MM-DD)' })
+  @IsDateString(
+    {},
+    {
+      message:
+        'La fecha de nacimiento debe tener un formato de fecha válido (YYYY-MM-DD)',
+    },
+  )
   @IsOptional()
   fechaNacimiento?: string;
 
@@ -32,18 +38,16 @@ export class CreateUserDto {
 
   @IsEmail({}, { message: 'El email debe tener un formato válido' })
   @IsNotEmpty({ message: 'El email es obligatorio' })
-  email: string;
+  email!: string;
 
-  @IsString({ message: 'La contraseña debe ser un texto' })
-  @MinLength(6, { message: 'La contraseña debe tener al menos 6 caracteres' })
   @IsNotEmpty({ message: 'La contraseña es obligatoria' })
-  password: string;
+  passwordHash!: string;
 
   @IsString({ message: 'El teléfono debe ser un texto' })
   @IsOptional()
   telefono?: string;
 
-  @IsEnum(RolUsuario, { message: 'El rol no es válido' })
+  @IsEnum(UserRole, { message: 'El rol no es válido' })
   @IsOptional()
-  rol?: RolUsuario;
+  rol?: UserRole;
 }

@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('ubicacion_evento')
 export class UbicacionEventoEntity {
@@ -13,7 +13,4 @@ export class UbicacionEventoEntity {
 
   @Column()
   capacidad!: number;
-
-
-
 }

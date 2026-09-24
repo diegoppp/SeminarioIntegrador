@@ -34,15 +34,22 @@ export class TypeOrmEventosRepository implements EventosRepository {
     return await this.eventoRepository.save(evento);
   }
 
-  async update(id: number, data: UpdateEventoDto): Promise<EventoEntity | null> {
+  async update(
+    id: number,
+    data: UpdateEventoDto,
+  ): Promise<EventoEntity | null> {
     const evento = await this.eventoRepository.findOneBy({ id });
     if (!evento) return null;
 
     //Parsear las fechas a Date porque vienen en formato json
     Object.assign(evento, {
       ...data,
-      fechaHoraInicio: data.fechaHoraInicio ? new Date(data.fechaHoraInicio) : evento.fechaHoraInicio,
-      fechaHoraFin: data.fechaHoraFin ? new Date(data.fechaHoraFin) : evento.fechaHoraFin,
+      fechaHoraInicio: data.fechaHoraInicio
+        ? new Date(data.fechaHoraInicio)
+        : evento.fechaHoraInicio,
+      fechaHoraFin: data.fechaHoraFin
+        ? new Date(data.fechaHoraFin)
+        : evento.fechaHoraFin,
     });
 
     return await this.eventoRepository.save(evento);

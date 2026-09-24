@@ -10,6 +10,8 @@ import { DetalleVenta } from '../venta/entities/detalle-venta.entity';
 import { PagosService } from './pagos.service';
 import { PagosController } from './pagos.controller';
 import { UsersModule } from '../users/users.module';
+import { PAGOS_REPOSITORY } from './repositories/pagos.repository';
+import { TypeOrmPagosRepository } from './repositories/TypeOrmPagosRepository';
 
 @Module({
   imports: [
@@ -17,7 +19,10 @@ import { UsersModule } from '../users/users.module';
     UsersModule,
   ],
   controllers: [PagosController],
-  providers: [PagosService],
-  exports: [PagosService, TypeOrmModule],
+  providers: [
+    PagosService,
+    { provide: PAGOS_REPOSITORY, useClass: TypeOrmPagosRepository },
+  ],
+  exports: [PagosService, PAGOS_REPOSITORY],
 })
 export class PagosModule {}

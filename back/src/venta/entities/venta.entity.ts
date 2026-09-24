@@ -1,25 +1,34 @@
-import { Cobro } from "src/pagos/entities/cobro.entity";
-import { User } from "src/users/entities/user.entity";
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import { DetalleVenta } from "./detalle-venta.entity";
+import { Cobro } from 'src/pagos/entities/cobro.entity';
+import { UserEntity } from 'src/users/entities/user.entity';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { DetalleVenta } from './detalle-venta.entity';
 
-@Entity ('ventas')
+@Entity('ventas')
 export class Venta {
-    @PrimaryGeneratedColumn('uuid')
-    id!: string;
-    
-    @CreateDateColumn({type: 'timestamp'})
-    fechaVenta!:Date;
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
 
-    @Column({type:'varchar', unique: true})
-    numeroVenta!:string;
+  @CreateDateColumn({ type: 'timestamp' })
+  fechaVenta!: Date;
 
-    @Column ({type:'decimal', precision:10, scale:2, default:0})
-    total!:number;
+  @Column({ type: 'varchar', unique: true })
+  numeroVenta!: string;
 
-    @ManyToOne(() => User, { eager: true })
+  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
+  total!: number;
+
+  @ManyToOne(() => UserEntity, { eager: true })
   @JoinColumn({ name: 'usuario_id' })
-  usuario!: User;
+  usuario!: UserEntity;
 
   // Relación con el módulo de Pagos
   @OneToOne(() => Cobro, { cascade: true, eager: true, nullable: true })
@@ -28,7 +37,4 @@ export class Venta {
 
   @OneToMany(() => DetalleVenta, (detalle) => detalle.venta, { cascade: true })
   detalleVenta!: DetalleVenta[];
-
- 
-
 }

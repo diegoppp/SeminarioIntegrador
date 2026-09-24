@@ -24,7 +24,10 @@ export class EventosService {
     return this.eventosRepository.findOne(id);
   }
 
-  async update(id: number, updateEventoDto: UpdateEventoDto): Promise<EventoEntity | null> {
+  async update(
+    id: number,
+    updateEventoDto: UpdateEventoDto,
+  ): Promise<EventoEntity | null> {
     return this.eventosRepository.update(id, updateEventoDto);
   }
 
