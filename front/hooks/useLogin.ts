@@ -1,5 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
+import { apiFetch, apiErrorMessage } from '@/lib/api'
+import { setToken } from '@/lib/auth'
 
 export function useLogin() {
   const router = useRouter()
@@ -18,22 +20,25 @@ export function useLogin() {
     setError('')
     setLoading(true)
 
-    // TODO: conectar con el back cuando exista el endpoint real.
-    // Ejemplo:
-    // const res = await fetch('http://localhost:3000/auth/login', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ email, password }),
-    // })
-    // if (!res.ok) {
-    //   setError('Credenciales inválidas.')
-    //   setLoading(false)
-    //   return
-    // }
+    try {
+      const res = await apiFetch('/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({ email, password }),
+      })
 
-    await new Promise(r => setTimeout(r, 600))
-    setLoading(false)
-    router.push('/')
+      if (!res.ok) {
+        setError(await apiErrorMessage(res, 'Credenciales inválidas.'))
+        return
+      }
+
+      const data = await res.json()
+      setToken(data.access_token)
+      router.push('/')
+    } catch {
+      setError('No se pudo conectar con el servidor. Intentalo de nuevo.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   const toggleShowPassword = () => setShowPassword(s => !s)

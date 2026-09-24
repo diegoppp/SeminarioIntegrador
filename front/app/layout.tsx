@@ -5,7 +5,6 @@ import './globals.css'
 export const metadata: Metadata = {
   title: 'Entrada — Viví lo que te mueve',
   description: 'Encontrá eventos, elegí tu lugar y asegurá tu entrada en un solo lugar.',
-  generator: 'v0.app',
 }
 
 export const viewport: Viewport = {
