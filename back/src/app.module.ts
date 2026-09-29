@@ -33,6 +33,7 @@ import { VentasModule } from './venta/venta.module';
         database: configService.get<string>('DB_DATABASE', 'eventos_db'),
         autoLoadEntities: true, // Carga automáticamente todas las entidades registradas en los módulos
         synchronize: true, // Crea/actualiza tablas automáticamente en desarrollo (desactivar en producción)
+        logging: true,
       }),
     }),
 
