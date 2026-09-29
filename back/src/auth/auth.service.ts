@@ -22,6 +22,11 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
+  private frontendUrl(path: string): string {
+    const baseUrl = this.cfg.get<string>('FRONTEND_URL') ?? 'http://localhost:3000';
+    return `${baseUrl}${path}`;
+  }
+
   private formatUser(user: UserEntity) {
     return {
       id: user.id,
@@ -49,11 +54,14 @@ export class AuthService {
       throw new ConflictException('El DNI ya está registrado');
     }
 
+    //Crear hash de la contraseña
     const rounds = Number(this.cfg.get<string>('BCRYPT_COST') ?? '12');
     const passwordHash = await bcrypt.hash(dto.password, rounds);
     const countUsers = await this.usersRepo
       .findAll()
       .then((users) => users.length);
+    
+    //Creacion de rol como admin(solo en desarrollo)
     const rol = countUsers === 0 ? UserRole.ADMIN : UserRole.CLIENTE;
     const tokenVerificacionEmail = randomUUID();
 
@@ -73,7 +81,9 @@ export class AuthService {
     });
 
     const resend = new Resend(this.cfg.getOrThrow<string>('RESEND_API_KEY'));
-    const verificationUrl = `http://localhost:4200/verify-email?token=${tokenVerificacionEmail}`;
+    const verificationUrl = this.frontendUrl(
+      `/verify-email?token=${tokenVerificacionEmail}`,
+    );
 
     const fromEmail = this.cfg.get<string>('RESEND_FROM_EMAIL') || 'onboarding@resend.dev';
 
@@ -146,7 +156,9 @@ export class AuthService {
     user.tokenVerificacionEmail = newToken;
     await this.usersRepo.save(user);
 
-    const verificationUrl = `http://localhost:4200/verify-email?token=${newToken}`;
+    const verificationUrl = this.frontendUrl(
+      `/verify-email?token=${newToken}`,
+    );
     const resend = new Resend(this.cfg.getOrThrow<string>('RESEND_API_KEY'));
     const fromEmail =
       this.cfg.get<string>('RESEND_FROM_EMAIL') || 'onboarding@resend.dev';
@@ -171,7 +183,7 @@ export class AuthService {
       user.tokenRecuperacionPassword = token;
       user.tokenRecuperacionExpiracion = expires;
       await this.usersRepo.save(user) 
-      const resetUrl = `http://localhost:4200/reset-password?token=${token}`;
+      const resetUrl = this.frontendUrl(`/reset-password?token=${token}`);
       const resend = new Resend(this.cfg.getOrThrow<string>('RESEND_API_KEY'));
       const fromEmail =
         this.cfg.get<string>('RESEND_FROM_EMAIL') || 'onboarding@resend.dev';

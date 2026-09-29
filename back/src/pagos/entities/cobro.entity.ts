@@ -21,9 +21,9 @@ export class Cobro {
   @CreateDateColumn({ type: 'timestamp' })
   fechaCobro!: Date;
 
-  @Column({ type: 'varchar', precision: 10, scale: 2 })
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
   monto!: number;
-
+  
   @Column({ type: 'enum', enum: EstadoCobro, default: EstadoCobro.PENDIENTE })
   estadoCobro!: EstadoCobro;
 
