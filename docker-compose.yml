@@ -1,8 +1,6 @@
-version: '3.8'
-
 services:
   postgres-db:
-    image: postgres:15-alpine
+    image: postgres:17-alpine
     container_name: postgres_eventos
     restart: always
     environment:
@@ -13,6 +11,46 @@ services:
       - "${DB_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres} -d ${DB_DATABASE:-eventos_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  back:
+    build: ./back
+    container_name: back_eventos
+    restart: always
+    env_file:
+      - ./back/.env
+    environment:
+      # En la red de compose la base se llama por el nombre del servicio
+      DB_HOST: postgres-db
+      DB_PORT: 5432
+    ports:
+      - "${BACK_PORT:-4200}:4200"
+    volumes:
+      - ./back:/app
+      - /app/node_modules
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+
+  front:
+    build: ./front
+    container_name: front_eventos
+    restart: always
+    environment:
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:4200}
+      PORT: 3000
+    ports:
+      - "${FRONT_PORT:-3000}:3000"
+    volumes:
+      - ./front:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      - back
 
 volumes:
   postgres_data:

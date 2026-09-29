@@ -29,7 +29,7 @@ import { VentasModule } from './venta/venta.module';
         host: configService.get<string>('DB_HOST', 'localhost'),
         port: configService.get<number>('DB_PORT', 5432),
         username: configService.get<string>('DB_USERNAME', 'postgres'),
-        password: configService.get<string>('DB_PASSWORD', 'mate2112'),
+        password: configService.get<string>('DB_PASSWORD', 'postgres'),
         database: configService.get<string>('DB_DATABASE', 'eventos_db'),
         autoLoadEntities: true, // Carga automáticamente todas las entidades registradas en los módulos
         synchronize: true, // Crea/actualiza tablas automáticamente en desarrollo (desactivar en producción)
