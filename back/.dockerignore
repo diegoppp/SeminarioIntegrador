@@ -4,3 +4,11 @@ coverage
 .env
 *.log
 .git
+Dockerfile
+.vscode
+.idea
+*.tsbuildinfo
+.DS_Store
+npm-debug.log*
+*.md
+test

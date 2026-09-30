@@ -4,3 +4,11 @@ out
 .env.local
 *.log
 .git
+Dockerfile
+.vscode
+.idea
+*.tsbuildinfo
+.DS_Store
+npm-debug.log*
+*.md
+.vercel
