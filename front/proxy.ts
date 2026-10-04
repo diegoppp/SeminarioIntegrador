@@ -9,11 +9,30 @@ function isValidToken(payload: JwtPayload | null): payload is JwtPayload {
   )
 }
 
+// Páginas por las que un usuario no verificado puede pasar sin problema
+const PUBLIC_UNVERIFIED = new Set([
+  '/',
+  '/login',
+  '/register',
+  '/verify-email',
+  '/verify-pending',
+])
+
 export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl
   const token = req.cookies.get(TOKEN_COOKIE)?.value ?? null
   const payload = token ? decodeJwt(token) : null
   const authenticated = isValidToken(payload)
+
+  // Token sin isVerified (emitido antes del cambio) se trata como verificado
+  const verified = authenticated ? payload!.isVerified !== false : false
+
+  // Usuario logueado pero sin email verificado: solo rutas públicas (verificación)
+  if (authenticated && !verified && !PUBLIC_UNVERIFIED.has(pathname)) {
+    const url = req.nextUrl.clone()
+    url.pathname = '/verify-pending'
+    return NextResponse.redirect(url)
+  }
 
   if (!authenticated && pathname.startsWith('/perfil')) {
     const url = req.nextUrl.clone()
@@ -40,5 +59,5 @@ export function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/perfil/:path*', '/admin/:path*'],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|.*\\..*).*)'],
 }

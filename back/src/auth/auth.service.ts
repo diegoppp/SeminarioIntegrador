@@ -97,6 +97,7 @@ export class AuthService {
     const accessToken = this.jwtService.sign({
       sub: entity.id,
       role: entity.rol,
+      isVerified: entity.emailVerificado,
     });
 
     return {
@@ -122,6 +123,7 @@ export class AuthService {
     const accessToken = this.jwtService.sign({
       sub: user.id,
       role: user.rol,
+      isVerified: user.emailVerificado,
     });
 
     return {
@@ -140,7 +142,13 @@ export class AuthService {
     user.tokenVerificacionEmail = null;
     await this.usersRepo.save(user);
 
-    return { message: 'Email verificado' };
+    const accessToken = this.jwtService.sign({
+      sub: user.id,
+      role: user.rol,
+      isVerified: true,
+    });
+
+    return { message: 'Email verificado', access_token: accessToken };
   }
 
   async resendVerification(userId: string) {

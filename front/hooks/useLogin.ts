@@ -33,7 +33,7 @@ export function useLogin() {
 
       const data = await res.json()
       setToken(data.access_token)
-      router.push('/')
+      router.push(data.user?.isVerified ? '/' : '/verify-pending')
     } catch {
       setError('No se pudo conectar con el servidor. Intentalo de nuevo.')
     } finally {

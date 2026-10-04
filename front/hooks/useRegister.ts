@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react'
+import { useState, type SubmitEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import { apiFetch, apiErrorMessage } from '@/lib/api'
 import { setToken } from '@/lib/auth'
@@ -18,9 +18,9 @@ export function useRegister() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (!apellido || !dni || !email || !password) {
+    if (!apellido || !dni || !email || !password || !confirmPassword || !telefono || !fechaNacimiento || !provincia || !nombre) {
       setError('Completá los campos obligatorios.')
       return
     }
@@ -38,16 +38,7 @@ export function useRegister() {
     try {
       const res = await apiFetch('/auth/register', {
         method: 'POST',
-        body: JSON.stringify({
-          nombre: nombre || undefined,
-          apellido,
-          dni,
-          email,
-          password,
-          fechaNacimiento: fechaNacimiento || undefined,
-          provincia: provincia || undefined,
-          telefono: telefono || undefined,
-        }),
+        body: JSON.stringify({ nombre, apellido, dni, email, password, fechaNacimiento, provincia, telefono }),
       })
 
       if (!res.ok) {
@@ -57,7 +48,7 @@ export function useRegister() {
 
       const data = await res.json()
       setToken(data.access_token)
-      router.push('/')
+      router.push(data.user?.isVerified ? '/' : '/verify-pending')
     } catch {
       setError('No se pudo conectar con el servidor. Intentalo de nuevo.')
     } finally {
