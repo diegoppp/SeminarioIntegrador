@@ -34,7 +34,7 @@ export default function RegisterPage() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center gap-8.5 px-5 py-8">
       <Link href="/" className="brand flex items-center gap-2 text-2xl font-extrabold tracking-tight text-foreground no-underline">
-        <span className="brand-mark"><Ticket size={19} /></span>entrada<span className="brand-dot">.</span>
+        <span className="brand-mark"><Ticket size={19} /></span>Rewind<span className="brand-dot">.</span>
       </Link>
 
       <div className="w-[min(420px,100%)] rounded-[7px] border border-border bg-card px-8.5 py-9">

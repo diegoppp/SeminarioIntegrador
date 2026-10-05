@@ -4,7 +4,7 @@ import './globals.css'
 import { Toaster } from '@/components/ui/sonner';
 
 export const metadata: Metadata = {
-  title: 'Entrada — Viví lo que te mueve',
+  title: 'Rewind — Viví lo que te mueve',
   description: 'Encontrá eventos, elegí tu lugar y asegurá tu entrada en un solo lugar.',
 }
 
