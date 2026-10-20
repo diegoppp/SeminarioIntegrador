@@ -15,8 +15,8 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="es" className="bg-background">
-      <body className="antialiased">
+    <html lang="es" data-scroll-behavior="smooth" className="scroll-smooth bg-background scheme-dark">
+      <body className="m-0 bg-background font-sans text-foreground antialiased">
         {children}
         <Toaster richColors closeButton />
         {process.env.NODE_ENV === 'production' && <Analytics />}

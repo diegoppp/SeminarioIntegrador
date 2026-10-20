@@ -7,6 +7,8 @@ import { toast } from 'sonner'
 import { MailCheck, RefreshCw, Ticket } from 'lucide-react'
 import { apiFetch, apiErrorMessage } from '@/lib/api'
 import { getSession } from '@/lib/auth'
+import AuthShell from '@/components/AuthShell'
+import PrimaryAction from '@/components/PrimaryAction'
 
 export default function VerifyPendingPage() {
   const router = useRouter()
@@ -37,12 +39,8 @@ export default function VerifyPendingPage() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-8.5 px-5 py-8">
-      <Link href="/" className="brand flex items-center gap-2 text-2xl font-extrabold tracking-tight text-foreground no-underline">
-        <span className="brand-mark"><Ticket size={19} /></span>Rewind<span className="brand-dot">.</span>
-      </Link>
-
-      <div className="w-[min(420px,100%)] rounded-[7px] border border-border bg-card px-8.5 py-9 text-center">
+    <AuthShell brandIcon={<Ticket size={19} />} cardClassName="text-center">
+      <>
         <MailCheck size={42} className="mx-auto text-primary" />
         <h1 className="mt-4 font-serif text-3xl font-normal tracking-tight">Revisá tu email</h1>
         <p className="my-3 text-sm leading-relaxed text-muted-foreground">
@@ -55,13 +53,13 @@ export default function VerifyPendingPage() {
           </p>
         )}
 
-        <button
-          className="primary-button mt-3 flex w-full items-center justify-center gap-2 rounded-[7px] py-3.5 disabled:cursor-default disabled:opacity-60"
+        <PrimaryAction
+          className="mt-3 flex w-full items-center justify-center gap-2 rounded-[7px] py-3.5 disabled:cursor-default disabled:opacity-60"
           onClick={handleResend}
           disabled={sending}
         >
           {sending ? 'Reenviando…' : 'Reenviar email'} <RefreshCw size={17} />
-        </button>
+        </PrimaryAction>
 
         <button
           className="mt-4 w-full border-0 bg-transparent text-[13px] text-muted-foreground"
@@ -69,7 +67,7 @@ export default function VerifyPendingPage() {
         >
           Volver a iniciar sesión
         </button>
-      </div>
-    </main>
+      </>
+    </AuthShell>
   )
 }
