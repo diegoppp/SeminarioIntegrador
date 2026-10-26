@@ -28,22 +28,15 @@ import { formatPrice } from '@/lib/utils'
 import { useCart } from '@/hooks/useCart'
 import { useEventCatalog } from '@/hooks/useEventCatalog'
 import { usePageUI } from '@/hooks/usePageUI'
-
-const events: Event[] = [
-  { id: 1, title: 'Cosquín Rock 2025', artist: 'Festival de música', category: 'Música', date: '15 FEB', fullDate: 'Sábado 15 de febrero, 2025', place: 'Aeródromo Santa María de Punilla', city: 'Córdoba', price: 65000, color: 'coral', tag: 'Más vendido', image: 'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=1000&q=80' },
-  { id: 2, title: 'Lollapalooza Argentina', artist: 'Música en vivo', category: 'Festivales', date: '21 MAR', fullDate: 'Viernes 21 de marzo, 2025', place: 'Hipódromo de San Isidro', city: 'Buenos Aires', price: 98000, color: 'blue', tag: 'Últimas entradas', image: 'https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?auto=format&fit=crop&w=1000&q=80' },
-  { id: 3, title: 'Mundial de Tango', artist: 'Competencia y gala', category: 'Cultura', date: '14 AGO', fullDate: 'Jueves 14 de agosto, 2025', place: 'Usina del Arte', city: 'Buenos Aires', price: 18000, color: 'yellow', tag: 'Recomendado', image: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1000&q=80' },
-  { id: 4, title: 'Stand Up: Malena Pichot', artist: 'Humor en vivo', category: 'Teatro', date: '08 MAY', fullDate: 'Jueves 8 de mayo, 2025', place: 'Teatro Gran Rex', city: 'Buenos Aires', price: 22000, color: 'purple', tag: 'Disponible', image: 'https://images.unsplash.com/photo-1503095396549-80718e659734?auto=format&fit=crop&w=1000&q=80' },
-  { id: 5, title: 'River Plate vs. Talleres', artist: 'Fútbol argentino', category: 'Deportes', date: '30 JUN', fullDate: 'Lunes 30 de junio, 2025', place: 'Estadio Monumental', city: 'Buenos Aires', price: 42000, color: 'green', tag: 'Disponible', image: 'https://images.unsplash.com/photo-1522778119026-d647f0596c20?auto=format&fit=crop&w=1000&q=80' },
-  { id: 6, title: 'Bresh Buenos Aires', artist: 'La fiesta más linda', category: 'Fiestas', date: '12 ABR', fullDate: 'Sábado 12 de abril, 2025', place: 'GEBA San Martín', city: 'Buenos Aires', price: 15000, color: 'pink', tag: 'Nuevo', image: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1000&q=80' },
-]
-
-const categories = ['Todos', 'Música', 'Festivales', 'Cultura', 'Teatro', 'Deportes']
+import { useEvent } from '@/hooks/useEvent'
 
 export default function Page() {
+  const { events, loading, error } = useEvent()
   const { query, setQuery, category, setCategory, favorites, toggleFavorite, filtered } = useEventCatalog(events)
   const { cart, cartOpen, count, total, service, addToCart, updateQuantity, openCart, closeCart } = useCart()
   const { selected, setSelected, organizer, setOrganizer, menuOpen, setMenuOpen, openOrganizer } = usePageUI()
+  if (loading) {return <p>Cargando eventos...</p>}
+  if (error) {return <p>Error: {error}</p>}
 
   return (
     <main className="min-h-screen">

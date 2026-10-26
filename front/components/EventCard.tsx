@@ -1,21 +1,7 @@
 import { CalendarDays, Heart, MapPin } from 'lucide-react'
 import { formatPrice } from '@/lib/utils'
 import Eyebrow from '@/components/Eyebrow'
-
-export interface Event {
-  id: number
-  title: string
-  artist: string
-  category: string
-  date: string
-  fullDate: string
-  place: string
-  city: string
-  price: number
-  color: string
-  tag: string
-  image: string
-}
+import { Evento } from '@/hooks/useEvent'
 
 const tagColors: Record<string, string> = {
   coral: 'text-primary',
@@ -26,7 +12,7 @@ const tagColors: Record<string, string> = {
   pink: 'text-[#c04c77]',
 }
 
-export function EventCard({ event, onSelect, favorite, onFavorite }: { event: Event, onSelect: () => void, favorite: boolean, onFavorite: () => void }) {
+export function EventCard({ event, onSelect, favorite, onFavorite }: { event: Evento, onSelect: () => void, favorite: boolean, onFavorite: () => void }) {
   return <article className="group">
     <div className="relative block h-52 w-full overflow-hidden rounded-md bg-[#ddd] max-[800px]:h-55" onClick={onSelect} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onSelect() }} role="button" tabIndex={0} aria-label={`Ver ${event.title}`}>
       <img className="h-full w-full object-cover transition-transform duration-350 group-hover:scale-[1.04]" src={event.image} alt="" />

@@ -1,18 +1,51 @@
 import { useMemo, useState } from 'react'
-import type { Event } from '@/components/EventCard'
+import { Evento } from './useEvent'
 
-export function useEventCatalog(events: Event[]) {
+export function useEventCatalog(events: Evento[]) {
   const [query, setQuery] = useState('')
-  const [category, setCategory] = useState('Todos')
+  const [tipoEvento, setTipoEvento] = useState('Todos')
   const [favorites, setFavorites] = useState<number[]>([])
 
   const filtered = useMemo(
-    () => events.filter(e => (category === 'Todos' || e.category === category) && `${e.title} ${e.artist} ${e.city}`.toLowerCase().includes(query.toLowerCase())),
-    [events, query, category],
+    () =>
+      events.filter((evento) => {
+        const coincideTipo =
+          tipoEvento === 'Todos' ||
+          evento.tipoEvento.nombre === tipoEvento
+
+        const textoBusqueda = [
+          evento.nombre,
+          evento.descripcion,
+          evento.tipoEvento.nombre,
+          evento.ubicacionEvento.nombre,
+          evento.ubicacionEvento.direccion,
+        ]
+          .join(' ')
+          .toLowerCase()
+
+        const coincideBusqueda = textoBusqueda.includes(
+          query.toLowerCase().trim(),
+        )
+
+        return coincideTipo && coincideBusqueda
+      }),
+    [events, query, tipoEvento],
   )
 
   const toggleFavorite = (id: number) =>
-    setFavorites(f => (f.includes(id) ? f.filter(x => x !== id) : [...f, id]))
+    setFavorites((prev) =>
+      prev.includes(id)
+        ? prev.filter((x) => x !== id)
+        : [...prev, id],
+    )
 
-  return { query, setQuery, category, setCategory, favorites, toggleFavorite, filtered }
+  return {
+    query,
+    setQuery,
+    tipoEvento,
+    setTipoEvento,
+    favorites,
+    toggleFavorite,
+    filtered,
+  }
 }

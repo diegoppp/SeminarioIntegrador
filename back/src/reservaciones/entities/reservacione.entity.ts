@@ -1,1 +1,1 @@
-export class Reservacione {}
+export class Reservaciones {}
