@@ -1,0 +1,7 @@
+export enum EstadoEvento {
+  ACTIVO = 'ACTIVO',
+  INACTIVO = 'INACTIVO',
+  CANCELADO = 'CANCELADO',
+  FINALIZADO = 'FINALIZADO',
+}
+

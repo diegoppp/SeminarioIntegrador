@@ -9,7 +9,7 @@ import { ProductoresModule } from './productores/productores.module';
 import { EventosModule } from './eventos/eventos.module';
 import { ReservacionesModule } from './reservaciones/reservaciones.module';
 import { PagosModule } from './pagos/pagos.module';
-import { TicketsModule } from './tickets/tickets.module';
+import { EntriesModule } from './entradas/entries.module';
 import { MetricasModule } from './metricas/metricas.module';
 import { VentasModule } from './venta/venta.module';
 
@@ -44,7 +44,7 @@ import { VentasModule } from './venta/venta.module';
     EventosModule,
     ReservacionesModule,
     PagosModule,
-    TicketsModule,
+    EntriesModule,
     MetricasModule,
     VentasModule,
   ],

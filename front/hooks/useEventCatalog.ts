@@ -11,14 +11,14 @@ export function useEventCatalog(events: Evento[]) {
       events.filter((evento) => {
         const coincideTipo =
           tipoEvento === 'Todos' ||
-          evento.tipoEvento.nombre === tipoEvento
+          (evento.tipoEvento?.nombre || evento.tipoEventoNombre) === tipoEvento
 
         const textoBusqueda = [
           evento.nombre,
           evento.descripcion,
-          evento.tipoEvento.nombre,
-          evento.ubicacionEvento.nombre,
-          evento.ubicacionEvento.direccion,
+          evento.tipoEvento?.nombre || evento.tipoEventoNombre,
+          evento.ubicacionEvento?.nombre || '',
+          evento.ubicacionEvento?.direccion || '',
         ]
           .join(' ')
           .toLowerCase()

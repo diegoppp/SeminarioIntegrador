@@ -13,6 +13,32 @@ export interface UbicacionEvento {
   capacidad: number
 }
 
+export interface Sector {
+  id: number
+  nombre: string
+  capacidad: number
+}
+
+export interface TarifaEntrada {
+  id: number
+  eventoId: number
+  sectorId: number
+  monto: number | string
+  sector?: Sector
+  evento?: Evento
+}
+
+export interface Entrada {
+  id: number
+  fechaEmision: string
+  codigoQR?: string | null
+  eventoId: number
+  sectorId: number
+  tarifaEntradaId?: number | null
+  sector?: Sector
+  tarifaEntrada?: TarifaEntrada | null
+}
+
 export interface Evento {
   id: number
   nombre: string
@@ -23,6 +49,9 @@ export interface Evento {
   tipoEvento: TipoEvento
   estadoEvento: string
   ubicacionEvento: UbicacionEvento
+  entradas?: Entrada[]
+  tarifasEntrada?: TarifaEntrada[]
+  imagenUrl?: string | null
 }
 
 export type CreateEventoInput = Omit<
@@ -41,7 +70,7 @@ export function useEvent() {
     setLoading(true)
     setError(null)
     try {
-      const res = await apiFetch('/events')
+      const res = await apiFetch('/eventos')
 
       if (!res.ok) {
         const msg = await apiErrorMessage(res, 'Error al cargar los eventos')
@@ -65,7 +94,7 @@ export function useEvent() {
   ): Promise<Evento | null> => {
     setError(null)
     try {
-      const res = await apiFetch('/events', {
+      const res = await apiFetch('/eventos', {
         method: 'POST',
         body: JSON.stringify(eventData),
       })
@@ -87,7 +116,7 @@ export function useEvent() {
   const deleteEvent = async (id: number): Promise<boolean> => {
     setError(null)
     try {
-      const res = await apiFetch(`/events/${id}`, {
+      const res = await apiFetch(`/eventos/${id}`, {
         method: 'DELETE',
       })
 

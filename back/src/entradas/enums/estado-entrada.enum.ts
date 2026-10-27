@@ -1,0 +1,8 @@
+export enum EstadoEntrada {
+  DISPONIBLE = 'DISPONIBLE',
+  RESERVADA = 'RESERVADA',
+  VENDIDA = 'VENDIDA',
+  ANULADA = 'ANULADA',
+  USADA = 'USADA',
+}
+

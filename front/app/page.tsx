@@ -19,7 +19,7 @@ import {
   X,
   Zap,
 } from 'lucide-react'
-import { EventCard, type Event } from '@/components/EventCard'
+import { EventCard, mapEventoToCard, type Event } from '@/components/EventCard'
 import BrandLogo from '@/components/BrandLogo'
 import Eyebrow from '@/components/Eyebrow'
 import Overlay from '@/components/Overlay'
@@ -30,13 +30,15 @@ import { useEventCatalog } from '@/hooks/useEventCatalog'
 import { usePageUI } from '@/hooks/usePageUI'
 import { useEvent } from '@/hooks/useEvent'
 
+const categories = ['Todos', 'Concierto', 'Teatro', 'Deportivo', 'Festival', 'Otros']
+
 export default function Page() {
   const { events, loading, error } = useEvent()
-  const { query, setQuery, category, setCategory, favorites, toggleFavorite, filtered } = useEventCatalog(events)
+  const { query, setQuery, tipoEvento, setTipoEvento, favorites, toggleFavorite, filtered } = useEventCatalog(events)
   const { cart, cartOpen, count, total, service, addToCart, updateQuantity, openCart, closeCart } = useCart()
-  const { selected, setSelected, organizer, setOrganizer, menuOpen, setMenuOpen, openOrganizer } = usePageUI()
-  if (loading) {return <p>Cargando eventos...</p>}
-  if (error) {return <p>Error: {error}</p>}
+  const { selected, setSelected, organizer, setOrganizer, menuOpen, setMenuOpen } = usePageUI()
+  if (loading) {return <p className="p-10">Cargando eventos...</p>}
+  if (error) {return <p className="p-10">Error: {error}</p>}
 
   return (
     <main className="min-h-screen">
@@ -45,9 +47,9 @@ export default function Page() {
         <nav className={`${menuOpen ? 'max-[800px]:flex' : 'max-[800px]:hidden'} ml-[9%] flex items-center gap-8.5 max-[800px]:absolute max-[800px]:left-0 max-[800px]:right-0 max-[800px]:top-19 max-[800px]:m-0 max-[800px]:flex-col max-[800px]:items-start max-[800px]:gap-5 max-[800px]:border-b max-[800px]:border-border max-[800px]:bg-background max-[800px]:p-5`}>
           <a href="#eventos" className="flex items-center gap-1.75 text-sm text-[#62645f] no-underline hover:text-foreground">Descubrir eventos</a>
           <a href="#como-funciona" className="flex items-center gap-1.75 text-sm text-[#62645f] no-underline hover:text-foreground">¿Cómo funciona?</a>
-          <button className="flex items-center gap-1.75 border-0 bg-transparent text-sm text-[#62645f] hover:text-foreground" onClick={openOrganizer}>
-            <LayoutDashboard size={16} />Soy organizador
-          </button>
+          <Link href="/organizer/create" className="flex items-center gap-1.75 text-sm text-[#62645f] no-underline hover:text-foreground">
+            <LayoutDashboard size={16} />Crear evento (organizador)
+          </Link>
         </nav>
         <div className="flex items-center gap-5.75">
           <Link href="/login" className="border-0 bg-transparent text-sm text-[#5e625e] no-underline max-[800px]:hidden">Ingresar</Link>
@@ -61,47 +63,8 @@ export default function Page() {
         </div>
       </header>
 
-      {organizer ? (
+      {false ? (
         <section className="mx-auto max-w-310 px-10 pb-22.5 pt-10.5 max-[800px]:px-5.5 max-[800px]:py-7.5">
-          <div className="flex items-center justify-between">
-            <button className="border-0 bg-transparent text-[13px] text-[#777974]" onClick={() => setOrganizer(false)}>← Volver a eventos</button>
-            <span className="flex items-center gap-1.5 rounded-full bg-[#e3f2e5] px-2.75 py-1.75 text-[11px] text-[#468359]">
-              <span className="size-1.5 rounded-full bg-[#4c9b61]" />Cuenta verificada
-            </span>
-          </div>
-          <div className="mb-10 mt-13.75 flex items-end justify-between max-[800px]:mb-7.5 max-[800px]:mt-11.25 max-[800px]:block">
-            <div>
-              <Eyebrow>Panel de organizador</Eyebrow>
-              <h1 className="mt-2.75 font-serif text-[51px] font-normal leading-none tracking-[-1.5px] max-[800px]:text-[41px]">
-                Buen día, <em className="not-italic text-primary">Productora Norte.</em>
-              </h1>
-              <p className="mt-3 text-[#80827d]">Este es el resumen de tus eventos y ventas.</p>
-            </div>
-            <PrimaryAction className="max-[800px]:mt-5.5">+ Crear evento</PrimaryAction>
-          </div>
-          <div className="grid grid-cols-4 gap-3.75 max-[800px]:grid-cols-2">
-            <div className="rounded-md bg-card p-5.5 max-[800px]:p-3.75"><span className="block text-[11px] text-[#777974]">Ingresos generados</span><strong className="my-3.5 block text-[27px] tracking-[-1px] max-[800px]:text-[21px]">$ 18.420.500</strong><small className="text-[11px] text-[#468359]">↑ 12,8% vs. mes anterior</small></div>
-            <div className="rounded-md bg-card p-5.5 max-[800px]:p-3.75"><span className="block text-[11px] text-[#777974]">Entradas vendidas</span><strong className="my-3.5 block text-[27px] tracking-[-1px] max-[800px]:text-[21px]">2.846</strong><small className="text-[11px] text-[#468359]">↑ 8,2% vs. mes anterior</small></div>
-            <div className="rounded-md bg-card p-5.5 max-[800px]:p-3.75"><span className="block text-[11px] text-[#777974]">Ocupación promedio</span><strong className="my-3.5 block text-[27px] tracking-[-1px] max-[800px]:text-[21px]">78,4%</strong><small className="text-[11px] text-[#777974]">En 6 eventos activos</small></div>
-            <div className="rounded-md bg-card p-5.5 max-[800px]:p-3.75"><span className="block text-[11px] text-[#777974]">Asistencia total</span><strong className="my-3.5 block text-[27px] tracking-[-1px] max-[800px]:text-[21px]">94,2%</strong><small className="text-[11px] text-[#777974]">Promedio histórico</small></div>
-          </div>
-          <div className="mt-5.5 overflow-hidden rounded-md bg-card p-6.25 max-[800px]:p-4.25">
-            <div className="flex items-start justify-between">
-              <div><Eyebrow>Rendimiento</Eyebrow><h2 className="my-1.5 text-xl">Ventas de entradas</h2></div>
-              <button className="flex items-center gap-2.25 rounded-[5px] border border-[#c7c6c0] bg-transparent px-3.75 py-2.75 text-[13px] text-[#4d504d] max-[800px]:text-[11px]">Últimos 30 días <ChevronDown size={15} /></button>
-            </div>
-            <div className="flex h-68.75 min-w-142.5 pt-7 pr-2.5">
-              <div className="flex flex-col justify-between pb-6 text-[10px] text-[#999]"><span>$1.2M</span><span>$800K</span><span>$400K</span><span>$0</span></div>
-              <div className="ml-3.75 flex flex-1 items-end justify-around border-b border-[#ddd] bg-[repeating-linear-gradient(to_bottom,transparent_0,transparent_67px,#ecebe6_68px)]">
-                {[35, 48, 42, 58, 52, 67, 62, 76, 69, 81, 77, 94].map((v, i) => (
-                  <div className="flex h-full w-[6%] flex-col items-center justify-end gap-2.25" key={i}>
-                    <div className="max-h-[calc(100%-24px)] w-5.5 rounded-t-[3px] bg-primary" style={{ height: `${v}%` }} />
-                    <small className="text-[10px] text-[#999]">{['01', '03', '05', '07', '09', '11', '13', '15', '17', '19', '21', '23'][i]}</small>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
         </section>
       ) : (
         <>
@@ -155,8 +118,8 @@ export default function Page() {
               <div className="flex min-w-max flex-1 gap-1.25">
                 {categories.map(item => (
                   <button
-                    className={`rounded p-[9px_13px] text-[13px] ${category === item ? 'bg-foreground text-white' : 'border-0 bg-transparent text-[#787b76]'}`}
-                    onClick={() => setCategory(item)}
+                    className={`rounded p-[9px_13px] text-[13px] ${tipoEvento === item ? 'bg-foreground text-white' : 'border-0 bg-transparent text-[#787b76]'}`}
+                    onClick={() => setTipoEvento(item)}
                     key={item}
                   >
                     {item}
@@ -173,7 +136,7 @@ export default function Page() {
             {filtered.length ? (
               <div className="grid grid-cols-3 gap-x-5 gap-y-10.5 max-[800px]:grid-cols-1 max-[800px]:gap-y-7.5">
                 {filtered.map(event => (
-                  <EventCard key={event.id} event={event} onSelect={() => setSelected(event)} favorite={favorites.includes(event.id)} onFavorite={() => toggleFavorite(event.id)} />
+                  <EventCard key={event.id} event={event} onSelect={() => setSelected(mapEventoToCard(event) as any)} favorite={favorites.includes(event.id)} onFavorite={() => toggleFavorite(event.id)} />
                 ))}
               </div>
             ) : (
@@ -191,9 +154,9 @@ export default function Page() {
             <div className="flex items-center gap-2.75"><span className="grid size-8.5 place-items-center rounded-full bg-[#ece6ff] text-[#7468ac]"><Users size={18} /></span><div><strong className="block text-xs">Soporte humano</strong><small className="mt-0.75 block text-xs text-[#898b87]">Estamos para ayudarte</small></div></div>
             <div className="ml-auto flex flex-col items-end gap-1.25 max-[800px]:ml-0 max-[800px]:items-start">
               <span className="text-[11px] text-[#858781]">¿Organizás eventos?</span>
-              <button className="flex items-center gap-1.5 border-0 bg-transparent text-xs font-bold text-primary" onClick={() => setOrganizer(true)}>
+              <Link href="/organizer/create" className="flex items-center gap-1.5 border-0 bg-transparent text-xs font-bold text-primary no-underline">
                 Conocé Entrada para organizadores <ArrowRight size={16} />
-              </button>
+              </Link>
             </div>
           </section>
         </>
@@ -203,14 +166,14 @@ export default function Page() {
         <Overlay onClick={() => setSelected(null)}>
           <div className="relative max-h-[90vh] w-full max-w-190 overflow-auto rounded-[9px] bg-background" onClick={e => e.stopPropagation()}>
             <button className="absolute right-4 top-4 z-1 grid size-8.5 place-items-center rounded-full border-0 bg-[#1f1f1f] text-[#50514d]" onClick={() => setSelected(null)}><X size={20} /></button>
-            <img className="h-57.5 w-full object-cover" src={selected.image} alt="" />
+            <img className="h-57.5 w-full object-cover" src={(selected as any).image || (selected as any).imagenUrl || 'https://images.unsplash.com/photo-1505236858219-8359eb29e329?q=80&w=2162&auto=format&fit=crop'} alt={selected.title || (selected as any).nombre} />
             <div className="p-7 px-8 max-[800px]:p-5.75">
-              <Eyebrow>{selected.category}</Eyebrow>
-              <h2 className="mt-2 font-serif text-[42px] font-normal">{selected.title}</h2>
-              <p className="mb-5.75 mt-1 text-[#777974]">{selected.artist}</p>
+              <Eyebrow>{selected.category || (selected as any).tipoEvento?.nombre || (selected as any).tipoEventoNombre}</Eyebrow>
+              <h2 className="mt-2 font-serif text-[42px] font-normal">{selected.title || (selected as any).nombre}</h2>
+              <p className="mb-5.75 mt-1 text-[#777974]">{selected.artist || (selected as any).descripcion}</p>
               <div className="flex gap-8.75 border-y border-border py-4.25 max-[800px]:flex-col max-[800px]:gap-3.75">
-                <span className="flex flex-col gap-1.25 text-xs"><CalendarDays size={17} className="text-primary" /><b>{selected.fullDate}</b></span>
-                <span className="flex flex-col gap-1.25 text-xs"><MapPin size={17} className="text-primary" /><b>{selected.place}</b><small className="ml-6.25 text-[#888]">{selected.city}</small></span>
+                <span className="flex flex-col gap-1.25 text-xs"><CalendarDays size={17} className="text-primary" /><b>{selected.fullDate || (selected as any).fechaHoraInicio}</b></span>
+                <span className="flex flex-col gap-1.25 text-xs"><MapPin size={17} className="text-primary" /><b>{selected.place || (selected as any).ubicacionEvento?.direccion || (selected as any).ubicacionEvento?.nombre}</b><small className="ml-6.25 text-[#888]">{selected.city || (selected as any).ubicacionEvento?.nombre}</small></span>
               </div>
               <div className="mt-4.75 rounded-md bg-[#1f1f1f] p-4.25">
                 <div className="flex justify-between text-xs"><span>Campo general</span><strong className="text-[#4b8c63]">Disponible</strong></div>
@@ -220,9 +183,9 @@ export default function Page() {
                 <small className="text-[11px] text-[#878983]">Quedan más de 500 entradas</small>
               </div>
               <div className="mt-6 flex items-end justify-between max-[800px]:flex-col max-[800px]:items-stretch max-[800px]:gap-3.5">
-                <div><small className="block text-[11px] text-[#888]">Desde</small><strong className="mt-0.75 block text-[22px]">{formatPrice(selected.price)}</strong><span className="block text-[10px] text-[#888]">+ cargos de servicio</span></div>
-                <PrimaryAction className="flex items-center justify-center gap-2" onClick={() => { addToCart(selected); setSelected(null) }}>
-                  Elegir entradas <ArrowRight size={17} />
+                <div><small className="block text-[11px] text-[#888]">Entradas</small><strong className="mt-0.75 block text-[16px]">{(selected as any).tarifasEntrada?.length ? 'Seleccioná sector' : 'Sin tarifas configuradas'}</strong><span className="block text-[10px] text-[#888]">El precio lo define TarifaEntrada por sector</span></div>
+                <PrimaryAction className="flex items-center justify-center gap-2" onClick={() => { addToCart(mapEventoToCard(selected as any) as any); setSelected(null) }}>
+                  Ver entradas <ArrowRight size={17} />
                 </PrimaryAction>
               </div>
             </div>
@@ -245,19 +208,19 @@ export default function Page() {
                 <div className="mt-5">
                   {cart.map(item => (
                     <div className="flex items-start gap-3 border-b border-border py-4.25" key={item.event.id}>
-                      <div className={`grid h-11.25 w-10.75 shrink-0 place-items-center rounded bg-[#181818] ${item.event.color === 'coral' ? 'bg-[#3a2504]' : ''} ${item.event.color === 'blue' ? 'bg-[#c9d9f7]' : ''} ${item.event.color === 'yellow' ? 'bg-[#f8e7a4]' : ''}`}>
-                        <b className="text-[17px]">{item.event.date.split(' ')[0]}</b><small className="text-[9px] font-bold text-primary">{item.event.date.split(' ')[1]}</small>
+                      <div className="grid h-11.25 w-10.75 shrink-0 place-items-center rounded bg-[#3a2504]">
+                        <b className="text-[17px]">{((item.event.date || (item.event as any).fechaHoraInicio || '') + '').split(' ')[0] || ((item.event as any).fechaHoraInicio ? new Date((item.event as any).fechaHoraInicio).toLocaleDateString('es-AR',{day:'2-digit'}) : '--')}</b><small className="text-[9px] font-bold text-primary">{((item.event.date || (item.event as any).fechaHoraInicio || '') + '').split(' ')[1] || ((item.event as any).fechaHoraInicio ? new Date((item.event as any).fechaHoraInicio).toLocaleDateString('es-AR',{month:'short'}).replace('.','').toUpperCase() : '---')}</small>
                       </div>
                       <div className="flex-1">
-                        <strong className="block text-[13px]">{item.event.title}</strong>
-                        <small className="mt-0.75 block text-[11px] text-[#858781]">Entrada general · {item.event.city}</small>
+                        <strong className="block text-[13px]">{item.event.title || (item.event as any).nombre}</strong>
+                        <small className="mt-0.75 block text-[11px] text-[#858781]">Entrada general · {item.event.city || (item.event as any).ubicacionEvento?.nombre}</small>
                         <div className="mt-2.5 flex items-center gap-2.75">
                           <button className="grid size-5.75 place-items-center rounded-[3px] border border-border bg-transparent" onClick={() => updateQuantity(item.event.id, -1)}><Minus size={13} /></button>
                           <span className="text-xs">{item.quantity}</span>
                           <button className="grid size-5.75 place-items-center rounded-[3px] border border-border bg-transparent" onClick={() => updateQuantity(item.event.id, 1)}><Plus size={13} /></button>
                         </div>
                       </div>
-                      <strong className="text-[13px]">{formatPrice(item.event.price * item.quantity)}</strong>
+                      <strong className="text-[13px]">{formatPrice(0)}</strong>
                     </div>
                   ))}
                 </div>

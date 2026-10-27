@@ -11,7 +11,7 @@ export function useCart() {
   const [cartOpen, setCartOpen] = useState(false)
 
   const count = useMemo(() => cart.reduce((sum, item) => sum + item.quantity, 0), [cart])
-  const total = useMemo(() => cart.reduce((sum, item) => sum + item.event.price * item.quantity, 0), [cart])
+  const total = useMemo(() => cart.reduce((sum, item) => sum + Number((item.event as any).price ?? (item.event as any).precio ?? 0) * item.quantity, 0), [cart])
   const service = useMemo(() => Math.round(total * 0.1), [total])
 
   const addToCart = (event: Event, quantity = 1) => {

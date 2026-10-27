@@ -7,7 +7,7 @@ export function usePageUI() {
   const [menuOpen, setMenuOpen] = useState(false)
 
   const openOrganizer = () => {
-    setOrganizer(true)
+    setOrganizer(false)
     setMenuOpen(false)
   }
 
