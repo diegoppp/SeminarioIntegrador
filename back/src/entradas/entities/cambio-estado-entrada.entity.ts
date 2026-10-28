@@ -1,6 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { EntryEntity } from './entry.entity';
 import { EstadoEntrada } from '../enums/estado-entrada.enum';
+import { Exclude } from 'class-transformer';
 
 @Entity('cambios_estado_entrada')
 export class CambioEstadoEntradaEntity {
@@ -12,6 +13,7 @@ export class CambioEstadoEntradaEntity {
 
   @ManyToOne(() => EntryEntity, { eager: true })
   @JoinColumn({ name: 'entradaId' })
+  @Exclude()
   entrada!: EntryEntity;
 
   @Column({

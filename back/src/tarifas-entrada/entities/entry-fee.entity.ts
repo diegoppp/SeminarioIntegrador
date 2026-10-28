@@ -1,6 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Unique } from 'typeorm';
 import { SectorEntity } from '../../sectores/entities/sector.entity';
 import { EventoEntity } from '../../eventos/entities/evento.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity('tarifas_entrada')
 @Unique(['eventoId', 'sectorId'])
@@ -11,8 +12,9 @@ export class EntryFeeEntity {
   @Column()
   eventoId!: number;
 
-  @ManyToOne(() => EventoEntity, (evento) => evento.entryFees, { eager: true })
+  @ManyToOne(() => EventoEntity, (evento) => evento.entryFees)
   @JoinColumn({ name: 'eventoId' })
+  @Exclude()
   evento!: EventoEntity;
 
   @Column()

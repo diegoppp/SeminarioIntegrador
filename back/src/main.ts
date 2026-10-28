@@ -1,22 +1,26 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, ClassSerializerInterceptor } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Habilita CORS para que el frontend pueda consumir la API
+  // Habilita CORS
   app.enableCors();
 
-  // Habilita la validación global de los DTOs
+  // Activa la transformación/exclusión de propiedades en respuestas JSON
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+
+  // Habilita la validación global de DTOs
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true, // Remueve campos extras no definidos en el DTO
-      forbidNonWhitelisted: true, // Lanza error si se envían campos no permitidos
-      transform: true, // Convierte tipos automáticamente de acuerdo al DTO
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
     }),
   );
 
-  await app.listen(process.env.PORT ?? 3000);
+  const port = process.env.PORT || 4200;
+  await app.listen(port, '0.0.0.0');
 }
 bootstrap();

@@ -4,6 +4,7 @@ import { SectorEntity } from '../../sectores/entities/sector.entity';
 import { EntryFeeEntity } from '../../tarifas-entrada/entities/entry-fee.entity';
 import { CambioEstadoEntradaEntity } from './cambio-estado-entrada.entity';
 import { EstadoEntrada } from '../enums/estado-entrada.enum';
+import { Exclude } from 'class-transformer';
 
 @Entity('entradas')
 export class EntryEntity {
@@ -26,21 +27,24 @@ export class EntryEntity {
   @Column()
   eventoId!: number;
 
-  @ManyToOne(() => EventoEntity, (evento) => evento.entries, { eager: true })
+  @ManyToOne(() => EventoEntity, (evento) => evento.entries)
   @JoinColumn({ name: 'eventoId' })
+  @Exclude()
   evento!: EventoEntity;
 
   @Column()
   sectorId!: number;
 
-  @ManyToOne(() => SectorEntity, (sector) => sector.entries, { eager: true })
+  // REMOVIDO: { eager: true }
+  @ManyToOne(() => SectorEntity, (sector) => sector.entries)
   @JoinColumn({ name: 'sectorId' })
   sector!: SectorEntity;
 
   @Column({ nullable: true })
   tarifaEntradaId!: number | null;
 
-  @ManyToOne(() => EntryFeeEntity, { eager: true, nullable: true })
+  // REMOVIDO: { eager: true }
+  @ManyToOne(() => EntryFeeEntity, { nullable: true })
   @JoinColumn({ name: 'tarifaEntradaId' })
   entryFee!: EntryFeeEntity | null;
 
@@ -51,6 +55,3 @@ export class EntryEntity {
 export { EstadoEntrada };
 export { CambioEstadoEntradaEntity };
 export { CambioEstadoEntrada } from './cambio-estado-entrada.entity';
-
-
-

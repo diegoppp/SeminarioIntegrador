@@ -10,7 +10,7 @@ export class CambioEstadoEventoEntity {
   @Column()
   eventoId!: number;
 
-  @ManyToOne(() => EventoEntity, { eager: true })
+  @ManyToOne(() => EventoEntity)
   @JoinColumn({ name: 'eventoId' })
   evento!: EventoEntity;
 

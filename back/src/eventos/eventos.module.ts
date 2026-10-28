@@ -8,6 +8,13 @@ import { TypeOrmEventosRepository } from './repositories/TypeOrmEventosRepositor
 import { TipoEventoEntity } from '../tipo-evento/tipo-evento.entity';
 import { UbicacionEventoEntity } from '../ubicacion-evento/entities/ubicacion-evento.entity';
 
+// Entidades de relaciones
+import { EntryEntity } from '../entradas/entities/entry.entity';
+import { EntryFeeEntity } from '../tarifas-entrada/entities/entry-fee.entity';
+import { CambioEstadoEventoEntity } from './entities/cambio-estado-evento.entity';
+import { SectorEntity } from '../sectores/entities/sector.entity';
+import { CambioEstadoEntradaEntity } from '../entradas/entities/cambio-estado-entrada.entity'; 
+
 @Module({
   controllers: [EventosController],
   imports: [
@@ -15,6 +22,11 @@ import { UbicacionEventoEntity } from '../ubicacion-evento/entities/ubicacion-ev
       EventoEntity,
       TipoEventoEntity,
       UbicacionEventoEntity,
+      EntryEntity,
+      EntryFeeEntity,
+      CambioEstadoEventoEntity,
+      SectorEntity,
+      CambioEstadoEntradaEntity, 
     ]),
   ],
   providers: [

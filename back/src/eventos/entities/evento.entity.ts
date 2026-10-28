@@ -11,7 +11,6 @@ import { UbicacionEventoEntity } from '../../ubicacion-evento/entities/ubicacion
 import { EntryEntity } from '../../entradas/entities/entry.entity';
 import { EntryFeeEntity } from '../../tarifas-entrada/entities/entry-fee.entity';
 import { CambioEstadoEventoEntity } from './cambio-estado-evento.entity';
-import { EstadoEvento } from '../enums/estado-evento.enum';
 
 @Entity('eventos')
 export class EventoEntity {
@@ -33,18 +32,13 @@ export class EventoEntity {
   @Column({ name: 'tipoEventoNombre' })
   tipoEventoNombre!: string;
 
-  @ManyToOne(() => TipoEventoEntity, { eager: true })
+  // REMOVIDO: { eager: true }
+  @ManyToOne(() => TipoEventoEntity)
   @JoinColumn({ name: 'tipoEventoNombre', referencedColumnName: 'nombre' })
   tipoEvento!: TipoEventoEntity;
 
-  @Column({
-    type: 'enum',
-    enum: EstadoEvento,
-    default: EstadoEvento.ACTIVO,
-  })
-  estadoEvento!: EstadoEvento | string;
-
-  @ManyToOne(() => UbicacionEventoEntity, { eager: true })
+  // REMOVIDO: { eager: true }
+  @ManyToOne(() => UbicacionEventoEntity)
   @JoinColumn({ name: 'idUbicacion' })
   ubicacionEvento!: UbicacionEventoEntity;
 
@@ -61,8 +55,5 @@ export class EventoEntity {
   imagenUrl!: string | null;
 }
 
-export { EstadoEvento };
 export { CambioEstadoEventoEntity };
 export { CambioEstadoEvento } from './cambio-estado-evento.entity';
-
-

@@ -16,7 +16,7 @@ export class TipoEventoEntity {
   @Column()
   descripcion!: string;
 
-  @ManyToOne(() => TipoEventoEntity, (tipo) => tipo.eventos, { eager: true })
+  @ManyToOne(() => TipoEventoEntity, (tipo) => tipo.eventos)
   @JoinColumn({ name: 'tipo_evento_id' })
   tipoEvento!: TipoEventoEntity;
   @OneToMany(() => EventoEntity, (evento) => evento.tipoEvento)
