@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import NavLink from '@/components/ui/NavLink'
 import {
   ArrowRight,
   CalendarDays,
@@ -29,6 +30,8 @@ import { useCart } from '@/hooks/useCart'
 import { useEventCatalog } from '@/hooks/useEventCatalog'
 import { usePageUI } from '@/hooks/usePageUI'
 import { useEvent } from '@/hooks/useEvent'
+import PopularSearches from '@/components/ui/PopularSearches'
+import Benefits from '@/components/ui/Benefits'
 
 const categories = ['Todos', 'Concierto', 'Teatro', 'Deportivo', 'Festival', 'Otros']
 
@@ -44,23 +47,26 @@ export default function Page() {
     <main className="min-h-screen">
       <header className="relative z-3 flex h-19 items-center justify-between border-b border-border bg-background px-[5.5vw] max-[800px]:px-5">
         <BrandLogo href="#inicio" icon={<Ticket size={19} />} />
+        
         <nav className={`${menuOpen ? 'max-[800px]:flex' : 'max-[800px]:hidden'} ml-[9%] flex items-center gap-8.5 max-[800px]:absolute max-[800px]:left-0 max-[800px]:right-0 max-[800px]:top-19 max-[800px]:m-0 max-[800px]:flex-col max-[800px]:items-start max-[800px]:gap-5 max-[800px]:border-b max-[800px]:border-border max-[800px]:bg-background max-[800px]:p-5`}>
-          <a href="#eventos" className="flex items-center gap-1.75 text-sm text-[#62645f] no-underline hover:text-foreground">Descubrir eventos</a>
-          <a href="#como-funciona" className="flex items-center gap-1.75 text-sm text-[#62645f] no-underline hover:text-foreground">¿Cómo funciona?</a>
-          <Link href="/organizer/create" className="flex items-center gap-1.75 text-sm text-[#62645f] no-underline hover:text-foreground">
-            <LayoutDashboard size={16} />Crear evento (organizador)
-          </Link>
+          <NavLink href="/#eventos">Descubrir eventos</NavLink>
+          <NavLink href="/#como-funciona">¿Cómo funciona?</NavLink>
+          <NavLink href="/organizer/create"><LayoutDashboard size={16} />Crear evento (organizador)</NavLink>
         </nav>
+
         <div className="flex items-center gap-5.75">
-          <Link href="/login" className="border-0 bg-transparent text-sm text-[#5e625e] no-underline max-[800px]:hidden">Ingresar</Link>
+          <Link href="/login" className="border-0 bg-transparent text-sm text-[#5e625e] no-underline max-[800px]:hidden">
+          Ingresar
+          </Link>
           <button className="relative border-0 bg-transparent text-foreground" onClick={openCart} aria-label="Abrir carrito">
             <ShoppingBag size={19} />
             <span className="absolute -right-2.25 -top-2 grid size-4.25 place-items-center rounded-full bg-primary text-[10px] text-white">{count}</span>
           </button>
-          <button className="hidden border-0 bg-transparent text-foreground max-[800px]:block" onClick={() => setMenuOpen(!menuOpen)} aria-label="Abrir menú">
+          <button className="hidden border-0 bg-transparent text-foreground max-[800px]:block" onClick={() => setMenuOpen(!menuOpen)} aria-label="Usar menú">
             <Menu size={20} />
           </button>
         </div>
+
       </header>
 
       {false ? (
@@ -77,24 +83,24 @@ export default function Page() {
                 <span className="mb-5 flex items-center gap-1.75 text-[11px] font-extrabold uppercase tracking-[1.5px] text-[#595375]">
                   <Zap size={14} fill="currentColor" />Tu próxima experiencia empieza acá
                 </span>
+
                 <h1 className="m-0 font-serif text-[76px] font-normal leading-[.94] tracking-[-3px] max-[800px]:text-[59px]">
                   Viví lo que<br /><em className="not-italic text-primary">te mueve.</em>
                 </h1>
+
                 <p className="my-6.5 max-w-102.5 text-[17px] leading-[1.55] text-[#56565e]">
                   Encontrá eventos, elegí tu lugar y asegurá tu entrada en un solo lugar.
                 </p>
+
                 <div className="flex max-w-136.25 items-center gap-2.75 rounded-lg bg-card py-1.75 pl-4.5 pr-2 shadow-[0_10px_28px_#8d82bd31]">
                   <Search size={20} className="shrink-0 text-[#96949d]" />
                   <input className="min-w-0 flex-1 border-0 bg-transparent text-sm text-foreground outline-none" value={query} onChange={e => setQuery(e.target.value)} placeholder="Buscá por artista, evento o ciudad..." />
                   <PrimaryAction className="rounded-md px-5.25 py-3.25">Buscar</PrimaryAction>
                 </div>
-                <div className="mt-3.75 flex items-center gap-3.25 text-[11px] text-[#686673]">
-                  <span>Popular:</span>
-                  <button className="border-0 bg-transparent p-0 text-[11px] text-[#565375] underline" onClick={() => setQuery('Música')}>Música</button>
-                  <button className="border-0 bg-transparent p-0 text-[11px] text-[#565375] underline" onClick={() => setQuery('Buenos Aires')}>Buenos Aires</button>
-                  <button className="border-0 bg-transparent p-0 text-[11px] text-[#565375] underline" onClick={() => setQuery('Fútbol')}>Fútbol</button>
-                </div>
+
+                <PopularSearches onSearch={setQuery} />
               </div>
+
               <div className="absolute bottom-17.5 right-[16%] z-2 flex items-center gap-3.5 text-white max-[800px]:bottom-8.75 max-[800px]:right-[10%]">
                 <span className="h-px w-11 bg-white/60" />
                 <div><strong className="block">Más de 2.000 eventos</strong><small className="mt-0.75 block opacity-80">para elegir este año</small></div>
@@ -147,18 +153,9 @@ export default function Page() {
               </div>
             )}
           </section>
+          
+          <Benefits />
 
-          <section className="mx-auto flex max-w-310 items-center gap-11.25 border-t border-[#dfded8] px-10 pb-16.25 pt-7.75 max-[800px]:mx-5.5 max-[800px]:flex-wrap max-[800px]:gap-5 max-[800px]:px-0 max-[800px]:pb-12.5 max-[800px]:pt-7" id="como-funciona">
-            <div className="flex items-center gap-2.75"><span className="grid size-8.5 place-items-center rounded-full bg-[#ece6ff] text-[#7468ac]"><Check size={18} /></span><div><strong className="block text-xs">Compra segura</strong><small className="mt-0.75 block text-xs text-[#898b87]">Tus datos están protegidos</small></div></div>
-            <div className="flex items-center gap-2.75"><span className="grid size-8.5 place-items-center rounded-full bg-[#ece6ff] text-[#7468ac]"><Clock3 size={18} /></span><div><strong className="block text-xs">Reserva temporal</strong><small className="mt-0.75 block text-xs text-[#898b87]">Tu lugar queda guardado</small></div></div>
-            <div className="flex items-center gap-2.75"><span className="grid size-8.5 place-items-center rounded-full bg-[#ece6ff] text-[#7468ac]"><Users size={18} /></span><div><strong className="block text-xs">Soporte humano</strong><small className="mt-0.75 block text-xs text-[#898b87]">Estamos para ayudarte</small></div></div>
-            <div className="ml-auto flex flex-col items-end gap-1.25 max-[800px]:ml-0 max-[800px]:items-start">
-              <span className="text-[11px] text-[#858781]">¿Organizás eventos?</span>
-              <Link href="/organizer/create" className="flex items-center gap-1.5 border-0 bg-transparent text-xs font-bold text-primary no-underline">
-                Conocé Entrada para organizadores <ArrowRight size={16} />
-              </Link>
-            </div>
-          </section>
         </>
       )}
 
